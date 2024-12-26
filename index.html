@@ -33,7 +33,7 @@
             position: relative;
             overflow: hidden;
             transition: max-height 0.3s ease;
-            max-height: 250px;
+            max-height: 280px; /* Увеличиваем начальную высоту */
         }
 
         .project.expanded {
@@ -101,6 +101,7 @@
             max-height: 200px; /* Ограничиваем максимальную высоту */
             padding-right: 10px;
             padding-top: 10px; /* Добавляем верхний отступ для текста */
+            overflow-y: auto; /* Включаем прокрутку */
         }
 
         /* Стили для полосы прокрутки */
@@ -126,6 +127,7 @@
         @media (max-width: 768px) {
             .project {
                 width: 160px;
+                max-height: 300px; /* Увеличиваем высоту блока для мобильной версии */
             }
 
             .arrow {
