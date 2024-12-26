@@ -120,15 +120,6 @@
                 max-height: 500px; /* Увеличиваем максимальную высоту для текста */
                 overflow-y: auto; /* Добавляем возможность прокрутки, если текст не помещается */
             }
-
-            /* Перемещаем стрелку, чтобы она не перекрывалась описанием */
-            .arrow-container {
-                margin-top: 15px;
-                position: absolute;
-                bottom: 10px; /* Размещаем стрелку внизу карточки */
-                left: 50%;
-                transform: translateX(-50%);
-            }
         }
 
         /* Десктопная версия */
@@ -146,10 +137,18 @@
             {
                 title: "Комплекс развлекательно-просветительских мероприятий Грань",
                 image_url: "https://i.postimg.cc/gJvg96Fp/temp-Imageyjc-So-U.avif",
-                description: "Комплекс развлекательно-просветительских мероприятий \"Грань\" — проект, направленный на развитие навыков устного счета, а также критического и аналитического мышления у обучающихся 4-8 классов Саратовской области. В рамках реализации проекта была разработана настольная игра \"Грань\", которая распространялась на выездных мероприятиях."
+                description: `Комплекс развлекательно-просветительских мероприятий "Грань" — проект, направленный на развитие навыков устного счета, а также критического и аналитического мышления у обучающихся 4-8 классов Саратовской области. В рамках реализации проекта была разработана настольная игра "Грань", которая распространялась на выездных мероприятиях.`
             },
-            { title: "Проект 2", image_url: "https://via.placeholder.com/200x150", description: "Описание проекта 2" },
-            { title: "Проект 3", image_url: "https://via.placeholder.com/200x150", description: "Описание проекта 3" }
+            { 
+                title: "Проект 2", 
+                image_url: "https://via.placeholder.com/200x150", 
+                description: "Описание проекта 2"
+            },
+            { 
+                title: "Проект 3", 
+                image_url: "https://via.placeholder.com/200x150", 
+                description: "Описание проекта 3"
+            }
         ];
 
         const carousel = document.getElementById("carousel");
@@ -163,7 +162,9 @@
                 <div class="arrow-container">
                     <div class="arrow" onclick="toggleDescription(${index})"></div>
                 </div>
-                <div class="description" id="description-${index}">${project.description}</div>
+                <div class="description" id="description-${index}">
+                    <p>${project.description}</p>
+                </div>
             `;
             carousel.appendChild(projectDiv);
         });
