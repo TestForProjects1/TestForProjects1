@@ -53,13 +53,15 @@
             color: #333;
         }
 
-        /* Фиксированное пространство для стрелки */
+        /* Отделяем стрелку от блока описания */
         .arrow-container {
-            height: 30px; /* Увеличиваем высоту контейнера для стрелки */
+            height: 40px; /* Увеличиваем высоту контейнера для стрелки */
             display: flex;
             align-items: center;
             justify-content: center;
             margin-top: 10px;
+            position: relative;
+            z-index: 2;
         }
 
         .arrow {
@@ -92,13 +94,14 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease;
+            z-index: 1;
         }
 
         .description.active {
             display: block;
             max-height: 200px; /* Ограничиваем максимальную высоту */
             overflow-y: auto; /* Включаем прокрутку */
-            padding-right: 10px; /* Чтобы шкала прокрутки не перекрывала текст */
+            padding-right: 10px;
         }
 
         /* Стили для полосы прокрутки */
@@ -123,21 +126,21 @@
         /* Мобильная версия */
         @media (max-width: 768px) {
             .project {
-                width: 160px; /* Уменьшаем ширину карточек */
+                width: 160px;
             }
 
             .arrow {
-                width: 35px; /* Увеличиваем размер стрелки */
+                width: 35px;
                 height: 35px;
             }
 
             .arrow::before {
-                font-size: 22px; /* Увеличиваем размер стрелки на мобильных устройствах */
+                font-size: 22px;
             }
 
             .description {
-                max-height: 200px; /* Увеличиваем максимальную высоту для текста */
-                overflow-y: auto; /* Добавляем возможность прокрутки */
+                max-height: 200px;
+                overflow-y: auto;
             }
         }
 
