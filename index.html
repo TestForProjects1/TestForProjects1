@@ -13,12 +13,14 @@
             background-color: #f9f9f9;
             overflow-x: hidden;
         }
+
         .carousel {
             display: flex;
             overflow-x: auto;
             padding: 20px;
             gap: 20px;
         }
+
         .project {
             flex: 0 0 auto;
             text-align: center;
@@ -29,35 +31,34 @@
             padding: 15px;
             width: 200px;
             position: relative;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            max-height: 250px;
         }
+
+        .project.expanded {
+            max-height: 600px;
+        }
+
         .project img {
             width: 100%;
             height: 150px;
             object-fit: cover;
             border-radius: 8px;
         }
+
         .project p {
             font-size: 1rem;
             margin: 10px 0;
             color: #333;
         }
-        .project button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: #0088cc;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-        .project button:hover {
-            background-color: #005f99;
-        }
 
-        /* Стиль для стрелочки */
+        /* Фиксированное пространство для стрелки */
         .arrow-container {
-            text-align: center;
+            height: 10px; /* Фиксированная высота блока */
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-top: 10px;
         }
 
@@ -71,19 +72,18 @@
             justify-content: center;
             cursor: pointer;
             transition: background-color 0.3s;
-            margin: 0 auto;  /* Центрируем стрелку */
         }
+
         .arrow:hover {
             background-color: #005f99;
         }
+
         .arrow::before {
             content: "↓";
             color: white;
             font-size: 18px;
-            margin-top: 2px;
         }
 
-        /* Описание проекта */
         .description {
             display: none;
             font-size: 0.9rem;
@@ -100,10 +100,12 @@
             .project {
                 width: 160px;
             }
+
             .arrow {
                 width: 25px;
                 height: 25px;
             }
+
             .arrow::before {
                 font-size: 14px;
             }
@@ -120,18 +122,18 @@
 <body>
     <div class="carousel" id="carousel"></div>
     <script>
-        // Пример данных проектов
-        const projects = [
-            { title: "Комплекс развлекательно-просветительских мероприятий "Грань"", image_url: "https://i.postimg.cc/gJvg96Fp/temp-Imageyjc-So-U.avif", description: 
-"Комплекс развлекательно-просветительских мероприятий «Грань»- проект, направленный на развитие навыков устного счета, 
-                а также критического и аналитического мышления у обучающихся 4-8 классов Саратовской области. В рамках реализации проекта была разработана настольная игра «Грань» которая распространялась на выездных мероприятиях" },
-            { title: "Проект 2", image_url: "https://via.placeholder.com/200x150", description: "Описание проекта 2" },
-            { title: "Проект 3", image_url: "https://via.placeholder.com/200x150", description: "Описание проекта 3" }
-        ];
+      const projects = [
+    {
+        title: "Комплекс развлекательно-просветительских мероприятий Грань",
+        image_url: "https://i.postimg.cc/gJvg96Fp/temp-Imageyjc-So-U.avif",
+        description: "Комплекс развлекательно-просветительских мероприятий «Грань» — проект, направленный на развитие навыков устного счета, а также критического и аналитического мышления у обучающихся 4-8 классов Саратовской области. В рамках реализации проекта была разработана настольная игра «Грань», которая распространялась на выездных мероприятиях."
+    },
+    { title: "Проект 2", image_url: "https://via.placeholder.com/200x150", description: "Описание проекта 2" },
+    { title: "Проект 3", image_url: "https://via.placeholder.com/200x150", description: "Описание проекта 3" }
+];
 
         const carousel = document.getElementById("carousel");
 
-        // Добавляем проекты в карусель
         projects.forEach((project, index) => {
             const projectDiv = document.createElement("div");
             projectDiv.className = "project";
@@ -146,10 +148,26 @@
             carousel.appendChild(projectDiv);
         });
 
-        // Функция для раскрытия/скрытия описания
         function toggleDescription(index) {
             const description = document.getElementById(`description-${index}`);
-            description.classList.toggle('active');
+            const project = description.closest('.project');
+            const allProjects = document.querySelectorAll('.project');
+
+            allProjects.forEach((proj) => {
+                if (proj !== project) {
+                    proj.classList.remove('expanded');
+                    const desc = proj.querySelector('.description');
+                    if (desc) desc.classList.remove('active');
+                }
+            });
+
+            if (description.classList.contains('active')) {
+                description.classList.remove('active');
+                project.classList.remove('expanded');
+            } else {
+                description.classList.add('active');
+                project.classList.add('expanded');
+            }
         }
     </script>
 </body>
