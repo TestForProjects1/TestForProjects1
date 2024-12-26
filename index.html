@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,12 +11,14 @@
             margin: 0;
             padding: 0;
             background-color: #f9f9f9;
+            overflow-x: hidden;
         }
         .carousel {
             display: flex;
             overflow-x: auto;
             padding: 20px;
             gap: 20px;
+            scroll-snap-type: x mandatory;
         }
         .project {
             flex: 0 0 auto;
@@ -28,6 +30,7 @@
             padding: 15px;
             width: 200px;
             position: relative;
+            scroll-snap-align: start;
         }
         .project img {
             width: 100%;
@@ -40,34 +43,77 @@
             margin: 10px 0;
             color: #333;
         }
-        .description {
-            display: none;
-            font-size: 0.9rem;
-            color: #555;
+        .project button {
             margin-top: 10px;
-        }
-        .toggle-description {
-            margin-top: 10px;
-            cursor: pointer;
+            padding: 10px 20px;
             background-color: #0088cc;
+            color: white;
             border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .project button:hover {
+            background-color: #005f99;
+        }
+
+        /* Стиль для стрелочки */
+        .arrow {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #0088cc;
             border-radius: 50%;
             width: 30px;
             height: 30px;
-            font-size: 1.2rem;
-            color: white;
-            display: block;
-            margin-left: auto; /* Центрирование кнопки по горизонтали */
-            margin-right: auto; /* Центрирование кнопки по горизонтали */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        .toggle-description:hover {
+        .arrow:hover {
             background-color: #005f99;
         }
-        .toggle-description:before {
-            content: "↓"; /* Стрелочка вниз */
+        .arrow::before {
+            content: "↓";
+            color: white;
+            font-size: 18px;
+            margin-top: 2px; /* для выравнивания по центру */
         }
-        .show-description .toggle-description:before {
-            content: "↑"; /* Стрелочка вверх */
+
+        /* Мобильная версия */
+        @media (max-width: 768px) {
+            .project {
+                width: 160px;
+            }
+            .arrow {
+                width: 25px;
+                height: 25px;
+            }
+            .arrow::before {
+                font-size: 14px;
+            }
+        }
+
+        /* Десктопная версия */
+        @media (min-width: 769px) {
+            .carousel {
+                justify-content: center;
+            }
+        }
+
+        /* Описание проекта */
+        .description {
+            display: none;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            color: #555;
+        }
+
+        .description.active {
+            display: block;
         }
     </style>
 </head>
@@ -89,28 +135,15 @@
             projectDiv.innerHTML = `
                 <img src="${project.image_url}" alt="${project.title}">
                 <p>${project.title}</p>
-                <div class="description">${project.description}</div>
-                <button class="toggle-description" onclick="toggleDescription(${index})"></button>
+                <div class="arrow" onclick="toggleDescription(${index})"></div>
+                <div class="description" id="description-${index}">${project.description}</div>
             `;
             carousel.appendChild(projectDiv);
         });
 
-        // Функция для переключения видимости описания
         function toggleDescription(index) {
-            const projectDiv = document.getElementsByClassName("project")[index];
-            const description = projectDiv.querySelector(".description");
-            const toggleButton = projectDiv.querySelector(".toggle-description");
-
-            description.style.display = description.style.display === "block" ? "none" : "block";
-            toggleButton.classList.toggle("show-description");
-        }
-
-        function sendData(index) {
-            const project = projects[index];
-            Telegram.WebApp.sendData(JSON.stringify({
-                title: project.title,
-                description: project.description
-            })); // Отправка данных в бот
+            const description = document.getElementById(`description-${index}`);
+            description.classList.toggle('active');
         }
     </script>
 </body>
