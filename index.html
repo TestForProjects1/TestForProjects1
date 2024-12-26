@@ -87,21 +87,20 @@
         }
 
         .description {
-            display: none; /* Скрыть описание по умолчанию */
             font-size: 0.9rem;
             margin-top: 10px;
             color: #555;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
+            max-height: 0; /* Изначально скрыто */
             padding-right: 10px;
+            padding-top: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, padding-top 0.5s ease, padding-bottom 0.5s ease;
         }
 
         .description.active {
-            display: block; /* Показывать описание при активации */
             max-height: 200px; /* Ограничиваем максимальную высоту */
-            padding-right: 10px;
-            padding-top: 10px; /* Добавляем верхний отступ для текста */
+            padding-top: 10px;
+            padding-bottom: 10px;
             overflow-y: auto; /* Включаем прокрутку */
         }
 
@@ -216,4 +215,4 @@
         }
     </script>
 </body>
-</html>
+</html>>
