@@ -87,7 +87,7 @@
         }
 
         .description {
-            display: block;
+            display: none; /* Скрыть описание по умолчанию */
             font-size: 0.9rem;
             margin-top: 10px;
             color: #555;
@@ -98,6 +98,7 @@
         }
 
         .description.active {
+            display: block; /* Показывать описание при активации */
             max-height: 200px; /* Ограничиваем максимальную высоту */
             padding-right: 10px;
             padding-top: 10px; /* Добавляем верхний отступ для текста */
