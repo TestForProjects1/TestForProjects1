@@ -101,6 +101,25 @@
             padding-right: 10px; /* Чтобы шкала прокрутки не перекрывала текст */
         }
 
+        /* Стили для полосы прокрутки */
+        .description::-webkit-scrollbar {
+            width: 6px; /* Уменьшаем ширину полосы прокрутки */
+        }
+
+        .description::-webkit-scrollbar-thumb {
+            background-color: #0088cc; /* Синий цвет стрелки */
+            border-radius: 10px; /* Закругляем уголки полосы прокрутки */
+            transition: background-color 0.3s; /* Плавный переход */
+        }
+
+        .description::-webkit-scrollbar-thumb:hover {
+            background-color: #005f99; /* Цвет при наведении */
+        }
+
+        .description::-webkit-scrollbar-track {
+            background-color: #f1f1f1; /* Цвет фона для полосы прокрутки */
+        }
+
         /* Мобильная версия */
         @media (max-width: 768px) {
             .project {
@@ -108,12 +127,12 @@
             }
 
             .arrow {
-                width: 35px; /* Увеличиваем размер стрелки */
-                height: 35px;
+                width: 10px; /* Увеличиваем размер стрелки */
+                height: 10px;
             }
 
             .arrow::before {
-                font-size: 22px; /* Увеличиваем размер стрелки на мобильных устройствах */
+                font-size: 10px; /* Увеличиваем размер стрелки на мобильных устройствах */
             }
 
             .description {
@@ -139,14 +158,14 @@
                 image_url: "https://i.postimg.cc/gJvg96Fp/temp-Imageyjc-So-U.avif",
                 description: `Комплекс развлекательно-просветительских мероприятий "Грань" — проект, направленный на развитие навыков устного счета, а также критического и аналитического мышления у обучающихся 4-8 классов Саратовской области. В рамках реализации проекта была разработана настольная игра "Грань", которая распространялась на выездных мероприятиях. Это описание достаточно длинное, чтобы проверить, как работает прокрутка текста, если он не помещается в блок.`
             },
-            {
-                title: "Проект 2",
-                image_url: "https://via.placeholder.com/200x150",
+            { 
+                title: "Проект 2", 
+                image_url: "https://via.placeholder.com/200x150", 
                 description: "Описание проекта 2"
             },
-            {
-                title: "Проект 3",
-                image_url: "https://via.placeholder.com/200x150",
+            { 
+                title: "Проект 3", 
+                image_url: "https://via.placeholder.com/200x150", 
                 description: "Описание проекта 3"
             }
         ];
