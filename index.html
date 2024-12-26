@@ -89,15 +89,16 @@
             font-size: 0.9rem;
             margin-top: 10px;
             color: #555;
-            height: auto; /* Убираем ограничение по высоте */
-            overflow: hidden; /* Обрезать текст, если он выходит за пределы */
-            transition: max-height 0.3s ease; /* Анимация для плавного открытия */
-            max-height: 0; /* Начальная максимальная высота, чтобы скрыть описание */
+            height: auto;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            max-height: 0;
         }
 
         .description.active {
             display: block;
-            max-height: 1000px; /* Устанавливаем максимальную высоту для видимости */
+            max-height: 500px; /* Максимальная высота, которая позволяет полностью показать описание */
+            overflow-y: auto; /* Прокрутка, если текст превышает максимальную высоту */
         }
 
         /* Мобильная версия */
@@ -118,6 +119,15 @@
             .description {
                 max-height: 500px; /* Увеличиваем максимальную высоту для текста */
                 overflow-y: auto; /* Добавляем возможность прокрутки, если текст не помещается */
+            }
+
+            /* Перемещаем стрелку, чтобы она не перекрывалась описанием */
+            .arrow-container {
+                margin-top: 15px;
+                position: absolute;
+                bottom: 10px; /* Размещаем стрелку внизу карточки */
+                left: 50%;
+                transform: translateX(-50%);
             }
         }
 
