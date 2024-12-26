@@ -87,21 +87,20 @@
         }
 
         .description {
-            display: none;
+            display: block;
             font-size: 0.9rem;
             margin-top: 10px;
             color: #555;
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease;
-            z-index: 1;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding-right: 10px;
         }
 
         .description.active {
-            display: block;
             max-height: 200px; /* Ограничиваем максимальную высоту */
-            overflow-y: auto; /* Включаем прокрутку */
             padding-right: 10px;
+            padding-top: 10px; /* Добавляем верхний отступ для текста */
         }
 
         /* Стили для полосы прокрутки */
