@@ -89,16 +89,15 @@
             font-size: 0.9rem;
             margin-top: 10px;
             color: #555;
-            height: auto;
+            max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease;
-            max-height: 0;
         }
 
         .description.active {
             display: block;
             max-height: 500px; /* Максимальная высота, которая позволяет полностью показать описание */
-            overflow-y: auto; /* Прокрутка, если текст превышает максимальную высоту */
+            overflow-y: auto; /* Добавляем прокрутку */
         }
 
         /* Мобильная версия */
@@ -118,7 +117,7 @@
 
             .description {
                 max-height: 500px; /* Увеличиваем максимальную высоту для текста */
-                overflow-y: auto; /* Добавляем возможность прокрутки, если текст не помещается */
+                overflow-y: auto; /* Добавляем возможность прокрутки */
             }
         }
 
