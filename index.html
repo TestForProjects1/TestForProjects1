@@ -3,216 +3,403 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <title>Проекты</title>
+    <title>Викторина: Великий и Могучий Русский Язык</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Moveton Funky -->
+    <!-- Application Structure Plan: A single-page, wizard-style quiz application. The structure guides the user through three distinct stages: a welcoming Start Screen, an interactive one-question-at-a-time Quiz View with rounds, and a final Results Screen with a detailed review. This step-by-step flow maximizes user focus. The key change is deferring feedback to the end, transforming the experience from an instant-feedback tool to a comprehensive test with a final review phase. -->
+    <!-- Visualization & Content Choices: The core of the application is the quiz interaction. Goal: Test Knowledge -> Presentation Method: A series of questions grouped by rounds, with large clickable answer buttons. Interaction: User clicks an answer and is immediately taken to the next question without feedback. This maintains pace. Goal: Summarize and Review -> Method: A final screen displays the numerical score, followed by a detailed, collapsible list of every question grouped by round. Interaction: Users can review their answers against the correct ones and read the rationale, reinforcing learning after the test is complete. Library/Method: Vanilla JavaScript for all logic, Tailwind CSS for styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-            overflow-x: hidden;
+            font-family: 'Nunito', sans-serif;
+            background-color: #FEEA62;
+            overflow-y: auto;
         }
-
-        .carousel {
-            display: flex;
-            overflow-x: auto;
-            padding: 20px;
-            gap: 20px;
+        .quiz-container {
+            background-color: white;
+            border: 4px solid #1E54A2;
+            box-shadow: 8px 8px 0px #1E54A2;
         }
-
-        .project {
-            flex: 0 0 auto;
-            text-align: center;
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            width: 200px;
-            position: relative;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-            max-height: 280px; /* Увеличиваем начальную высоту */
+        .btn {
+            transition: all 0.1s ease-in-out;
+            border-radius: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            border: 3px solid #1E54A2;
+            box-shadow: 0px 5px 0px #1E54A2;
         }
-
-        .project.expanded {
-            max-height: 600px;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 7px 0px #1E54A2;
         }
-
-        .project img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 8px;
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0px 2px 0px #1E54A2;
         }
-
-        .project p {
-            font-size: 1rem;
-            margin: 10px 0;
-            color: #333;
-        }
-
-        /* Отделяем стрелку от блока описания */
-        .arrow-container {
-            height: 50px; /* Увеличиваем высоту контейнера для стрелки */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 10px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .arrow {
-            background-color: #0088cc;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .arrow:hover {
-            background-color: #005f99;
-        }
-
-        .arrow::before {
-            content: "↓";
+        .btn-start {
+            background-color: #1E54A2;
             color: white;
-            font-size: 18px;
         }
-
-        .description {
-            font-size: 0.9rem;
-            margin-top: 10px;
-            color: #555;
-            max-height: 0; /* Изначально скрыто */
-            padding-right: 10px;
-            padding-top: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease, padding-top 0.5s ease, padding-bottom 0.5s ease;
+        .btn-review {
+            background-color: #F76A9E;
+            color: white;
         }
-
-        .description.active {
-            max-height: 200px; /* Ограничиваем максимальную высоту */
-            padding-top: 10px;
-            padding-bottom: 10px;
-            overflow-y: auto; /* Включаем прокрутку */
+        .answer-btn {
+            background-color: #6AD9D9;
+            color: #1E54A2;
         }
-
-        /* Стили для полосы прокрутки */
-        .description::-webkit-scrollbar {
-            width: 6px; /* Уменьшаем ширину полосы прокрутки */
+        .result-item-correct {
+            border-left: 4px solid #22c55e;
         }
-
-        .description::-webkit-scrollbar-thumb {
-            background-color: #0088cc; /* Синий цвет стрелки */
-            border-radius: 10px; /* Закругляем уголки полосы прокрутки */
-            transition: background-color 0.3s; /* Плавный переход */
+        .result-item-incorrect {
+            border-left: 4px solid #ef4444;
         }
-
-        .description::-webkit-scrollbar-thumb:hover {
-            background-color: #005f99; /* Цвет при наведении */
+        #progress-bar {
+            background-color: #F76A9E;
         }
-
-        .description::-webkit-scrollbar-track {
-            background-color: #f1f1f1; /* Цвет фона для полосы прокрутки */
+        .character {
+            position: absolute;
+            z-index: -1;
         }
-
-        /* Мобильная версия */
-        @media (max-width: 768px) {
-            .project {
-                width: 160px;
-                max-height: 300px; /* Увеличиваем высоту блока для мобильной версии */
-            }
-
-            .arrow {
-                width: 35px;
-                height: 35px;
-            }
-
-            .arrow::before {
-                font-size: 22px;
-            }
-
-            .description {
-                max-height: 200px;
-                overflow-y: auto;
-            }
+        .eye {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            border: 2px solid #1E54A2;
+            width: 15px;
+            height: 20px;
         }
-
-        /* Десктопная версия */
-        @media (min-width: 769px) {
-            .carousel {
-                justify-content: center;
-            }
+        .eye .pupil {
+            position: absolute;
+            background: #1E54A2;
+            border-radius: 50%;
+            width: 8px;
+            height: 8px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
+        .char-triangle {
+            width: 0;
+            height: 0;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-bottom: 100px solid #6AD9D9;
+            top: 15%;
+            left: 5%;
+            transform: rotate(-15deg);
+        }
+        .char-triangle .eye-left { top: 60px; left: -35px; }
+        .char-triangle .eye-right { top: 60px; left: 5px; }
+        .char-blob {
+            width: 150px;
+            height: 120px;
+            background: #F76A9E;
+            border-radius: 50% 50% 40% 60% / 60% 40% 60% 40%;
+            bottom: 10%;
+            right: 5%;
+            transform: rotate(20deg);
+        }
+        .char-blob .eye-left { top: 40px; left: 30px; }
+        .char-blob .eye-right { top: 40px; left: 80px; }
     </style>
 </head>
-<body>
-    <div class="carousel" id="carousel"></div>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="character char-triangle">
+        <div class="eye eye-left"><div class="pupil"></div></div>
+        <div class="eye eye-right"><div class="pupil"></div></div>
+    </div>
+    <div class="character char-blob">
+        <div class="eye eye-left"><div class="pupil"></div></div>
+        <div class="eye eye-right"><div class="pupil"></div></div>
+    </div>
+
+    <div id="quiz-app" class="quiz-container w-full max-w-3xl mx-auto rounded-3xl p-6 sm:p-10 text-center my-8">
+
+        <!-- Start Screen -->
+        <div id="start-screen">
+            <h1 class="text-4xl sm:text-6xl font-black text-blue-900 mb-2 uppercase" style="color: #1E54A2;">Моветон</h1>
+            <p class="text-stone-600 mb-8 text-lg font-bold">Игра про самые нелепые ситуации... в русском языке!</p>
+            <button id="start-btn" class="btn btn-start font-bold py-4 px-10 text-xl shadow-md">Начать игру</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div id="progress-container" class="mb-4">
+                 <h3 id="round-title" class="text-xl font-bold mb-2" style="color: #1E54A2;"></h3>
+                <p id="progress-text" class="text-sm text-stone-500 font-bold"></p>
+                <div class="w-full bg-stone-200 rounded-full h-3 mt-1 border-2 border-blue-900/20">
+                    <div id="progress-bar" class="h-full rounded-full transition-all duration-300"></div>
+                </div>
+            </div>
+            <h2 id="question-text" class="text-2xl font-black mb-6 min-h-[100px] flex items-center justify-center" style="color: #1E54A2;"></h2>
+            <div id="answer-buttons" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="hidden">
+            <h2 class="text-3xl font-black mb-4" style="color: #1E54A2;">Викторина завершена!</h2>
+            <p id="score-text" class="text-2xl mb-2 font-bold"></p>
+            <p id="score-message" class="text-lg text-stone-600 mb-8 font-bold"></p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button id="review-btn" class="btn btn-review py-3 px-8 text-xl shadow-md">Посмотреть ответы</button>
+                <button id="restart-btn" class="btn btn-start py-3 px-8 text-xl shadow-md">Сыграть еще раз</button>
+            </div>
+             <div id="results-details" class="hidden mt-8 text-left space-y-4">
+                <!-- Detailed results will be injected here -->
+            </div>
+        </div>
+        
+        <div class="mt-8 text-xs text-stone-400 font-bold uppercase tracking-wider">создано с Росмолодёжь</div>
+    </div>
+
     <script>
-        const projects = [
+        const quizData = [
             {
-                title: "Комплекс развлекательно-просветительских мероприятий Грань",
-                image_url: "https://i.postimg.cc/gJvg96Fp/temp-Imageyjc-So-U.avif",
-                description: `Комплекс развлекательно-просветительских мероприятий "Грань" — проект, направленный на развитие навыков устного счета, а также критического и аналитического мышления у обучающихся 4-8 классов Саратовской области. В рамках реализации проекта была разработана настольная игра "Грань", которая распространялась на выездных мероприятиях.`
+                round: "Раунд 1: Орфоэпия",
+                questions: [
+                    { question: "Где НЕВЕРНО поставлено ударение?", options: [ { text: "тОрты" }, { text: "звОнит", isCorrect: true }, { text: "щавЕль" }, { text: "крАсивее" } ], rationale: "Правильно: звонИт. В этом глаголе и его формах ударение всегда падает на последний слог." },
+                    { question: "В каком слове ударение падает на первый слог?", options: [ { text: "каталОг" }, { text: "экспЕрт" }, { text: "договОр" }, { text: "слИвовый", isCorrect: true } ], rationale: "В прилагательном 'слИвовый' (от 'слива') ударение ставится на первый слог." },
+                    { question: "Выберите вариант с единственно правильным ударением:", options: [ { text: "положИл", isCorrect: true }, { text: "пОняла" }, { text: "нАчала" }, { text: "создАла" } ], rationale: "Правильно: положИл. В остальных глаголах в форме женского рода ударение переходит на окончание: понялА, началА, создалА." },
+                    { question: "В каком слове ударение поставлено ВЕРНО?", options: [ { text: "избалОванный" }, { text: "облегчИть", isCorrect: true }, { text: "ходАтайствовать" }, { text: "премировАть" } ], rationale: "Правильно: облегчИть. В остальных словах: избалОванный, ходАтайствовать, премировАть." },
+                    { question: "Какое слово произносится с твёрдым согласным перед 'е'?", options: [ { text: "шинель" }, { text: "музей" }, { text: "темп" }, { text: "депо", isCorrect: true } ], rationale: "В заимствованном слове 'депо' согласный 'д' произносится твёрдо." }
+                ]
             },
             {
-                title: "Проект 2",
-                image_url: "https://via.placeholder.com/200x150",
-                description: "Описание проекта 2"
+                round: "Раунд 2: Лексика и Фразеология",
+                questions: [
+                    { question: "Что означает фразеологизм 'бить баклуши'?", options: [ { text: "усердно работать" }, { text: "бездельничать", isCorrect: true }, { text: "сильно бить" }, { text: "готовить еду" } ], rationale: "Выражение 'бить баклуши' означает бездельничать, заниматься пустяковым делом." },
+                    { question: "Какое слово является антонимом к слову 'альтруизм'?", options: [ { text: "гуманизм" }, { text: "оптимизм" }, { text: "эгоизм", isCorrect: true }, { text: "пессимизм" } ], rationale: "Эгоизм — это себялюбие, что прямо противоположно альтруизму (бескорыстной заботе о других)." },
+                    { question: "Подберите синоним к слову 'тщеславие'.", options: [ { text: "скромность" }, { text: "высокомерие", isCorrect: true }, { text: "щедрость" }, { text: "глупость" } ], rationale: "Тщеславие — это жажда славы и признания, что тесно связано с высокомерием и гордыней." },
+                    { question: "Что означает слово 'апогей'?", options: [ { text: "начало чего-либо" }, { text: "высшая точка развития", isCorrect: true }, { text: "тайный знак" }, { text: "глубокое ущелье" } ], rationale: "Апогей — это высшая точка, расцвет, кульминация чего-либо." },
+                    { question: "Какая пара слов НЕ является паронимами?", options: [ { text: "абонент - абонемент" }, { text: "дипломат - дипломант" }, { text: "эффектный - эффективный" }, { text: "экскаватор - эскалатор", isCorrect: true } ], rationale: "Экскаватор и эскалатор — это разные слова (технические устройства), а не паронимы (близкие по звучанию, но разные по значению слова)." }
+                ]
             },
             {
-                title: "Проект 3",
-                image_url: "https://via.placeholder.com/200x150",
-                description: "Описание проекта 3"
+                round: "Раунд 3: Грамматика",
+                questions: [
+                    { question: "Какого рода слово 'кофе' в современном русском литературном языке?", options: [ { text: "только мужского" }, { text: "только среднего" }, { text: "мужского, а в разговорной речи допустим и средний", isCorrect: true }, { text: "женского" } ], rationale: "Современные словари фиксируют мужской род как основной, но признают допустимость среднего рода в разговорной речи." },
+                    { question: "Какое из этих существительных является несклоняемым?", options: [ { text: "окно" }, { text: "село" }, { text: "пальто", isCorrect: true }, { text: "ведро" } ], rationale: "Заимствованное слово 'пальто' не изменяется по падежам и числам." },
+                    { question: "Какое слово образовано приставочно-суффиксальным способом?", options: [ { text: "перелесок" }, { text: "учитель" }, { text: "сверхзвуковой" }, { text: "подоконник", isCorrect: true } ], rationale: "Слово 'подоконник' образовано от 'окно' одновременным добавлением приставки 'под-' и суффикса '-ник'." },
+                    { question: "В каком предложении нужно употребить 'надеть'?", options: [ { text: "___ пальто на ребёнка", isCorrect: true }, { text: "___ ребёнка в пальто" }, { text: "___ на себя ответственность" }, { text: "___ куклу в платье" } ], rationale: "Запомните: НАдеть одежду, Одеть Надежду. Мы надеваем что-то (предмет) и одеваем кого-то (человека)." },
+                    { question: "Как правильно: 'в полутора...'?", options: [ { text: "стах метрах" }, { text: "ста метрах" }, { text: "стах метрах от" }, { text: "ста метрах", isCorrect: true } ], rationale: "Числительные 'полтора' и 'полтораста' в косвенных падежах имеют только одну форму: 'полутора' и 'полутораста'." }
+                ]
+            },
+             {
+                round: "Раунд 4: Синтаксис и Пунктуация",
+                questions: [
+                    { question: "В каком словосочетании допущена ошибка?", options: [ { text: "с восьмьюстами рублями" }, { text: "у обоих сестер", isCorrect: true }, { text: "около полутораста километров" }, { text: "директор школы" } ], rationale: "Правильно: у обеих сестер. С существительными женского рода используется собирательное числительное 'обеих'." },
+                    { question: "Определите тип односоставного предложения: 'Мне не спится.'", options: [ { text: "определённо-личное" }, { text: "неопределённо-личное" }, { text: "безличное", isCorrect: true }, { text: "назывное" } ], rationale: "В безличном предложении действие происходит само по себе, без указания на действующее лицо." },
+                    { question: "В каком предложении НЕОБХОДИМО поставить тире?", options: [ { text: "Он ___ мой лучший друг." }, { text: "Бедность ___ не порок." }, { text: "Москва ___ столица России.", isCorrect: true }, { text: "Утро было ___ серое." } ], rationale: "Тире ставится, так как подлежащее 'Москва' и сказуемое 'столица' выражены существительными в именительном падеже." },
+                    { question: "Какое предложение является сложносочинённым?", options: [ { text: "Когда взошло солнце, стало тепло." }, { text: "Солнце взошло, и стало тепло.", isCorrect: true }, { text: "Стало тепло, потому что взошло солнце." }, { text: "Взошедшее солнце принесло тепло." } ], rationale: "Сложносочинённое предложение состоит из двух равноправных частей, соединённых союзом 'и'." },
+                    { question: "В каком предложении нужно поставить ОДНУ запятую?", options: [ { text: "Ветер дул и срывал листья с деревьев." }, { text: "Я люблю и чай и кофе." }, { text: "Он вышел на улицу и пошёл в магазин." }, { text: "Она была умна и к тому же очень красива.", isCorrect: true } ], rationale: "Запятая нужна перед вводной конструкцией 'к тому же'." }
+                ]
+            },
+            {
+                round: "Раунд 5: История языка и Этимология",
+                questions: [
+                    { question: "От какого словосочетания произошло слово 'медведь'?", options: [ { text: "медленный зверь" }, { text: "медовый вор" }, { text: "ведающий мед", isCorrect: true }, { text: "медный бок" } ], rationale: "Эта версия предполагает, что слово образовалось от 'мёд' и 'ведать' (знать), то есть 'тот, кто знает, где мёд'." },
+                    { question: "Какая буква является самой молодой в русском алфавите?", options: [ { text: "Ф" }, { text: "Ъ" }, { text: "Й" }, { text: "Ё", isCorrect: true } ], rationale: "Буква 'Ё' была введена в употребление в конце XVIII века историком и писателем Н.М. Карамзиным." },
+                    { question: "Слово 'спасибо' образовалось от словосочетания...", options: [ { text: "Спаси Бог", isCorrect: true }, { text: "Паси Бог" }, { text: "Сам себе Бог" }, { text: "Славен Бог" } ], rationale: "Слово 'спасибо' — это результат слияния словосочетания 'Спаси Бог'." },
+                    { question: "Какое слово НЕ является старославянизмом?", options: [ { text: "врата" }, { text: "град" }, { text: "ограда", isCorrect: true }, { text: "глас" } ], rationale: "'Ограда' — слово с русским полногласием (-оро-, -оло-). Старославянские аналоги: врата (ворота), град (город), глас (голос)." },
+                    { question: "Слово 'неделя' в Древней Руси означало...", options: [ { text: "семидневный срок" }, { text: "день отдыха", isCorrect: true }, { text: "рабочий день" }, { text: "священный день" } ], rationale: "Неделей ('не делать') назывался день отдыха, который мы сейчас называем воскресеньем." }
+                ]
+            },
+            {
+                round: "Раунд 6: Литература",
+                questions: [
+                    { question: 'Кто автор строк: "Мой дядя самых честных правил..."?', options: [ { text: "М.Ю. Лермонтов" }, { text: "А.С. Пушкин", isCorrect: true }, { text: "Н.В. Гоголь" }, { text: "И.С. Тургенев" } ], rationale: "Это первая строфа романа в стихах 'Евгений Онегин' А.С. Пушкина." },
+                    { question: 'Кому принадлежат слова: "Никогда и ничего не просите!.. Сами предложат и сами всё дадут!"?', options: [ { text: "Воланду", isCorrect: true }, { text: "Мастеру" }, { text: "Понтию Пилату" }, { text: "Коровьеву" } ], rationale: "Эту фразу произносит Воланд в романе М.А. Булгакова 'Мастер и Маргарита'." },
+                    { question: "Из какого произведения фраза: 'А судьи кто?'", options: [ { text: "'Ревизор' Н.В. Гоголя" }, { text: "'Горе от ума' А.С. Грибоедова", isCorrect: true }, { text: "'Евгений Онегин' А.С. Пушкина" }, { text: "'Война и мир' Л.Н. Толстого" } ], rationale: "Эту знаменитую фразу произносит Чацкий в комедии А.С. Грибоедова 'Горе от ума'." },
+                    { question: "Кто из этих персонажей является главным героем романа И.А. Гончарова 'Обломов'?", options: [ { text: "Евгений Базаров" }, { text: "Андрей Болконский" }, { text: "Илья Ильич Обломов", isCorrect: true }, { text: "Григорий Печорин" } ], rationale: "Илья Ильич Обломов — заглавный герой романа, ставший символом лени и апатии ('обломовщины')." },
+                    { question: "Какой русский писатель является автором пьесы 'Вишневый сад'?", options: [ { text: "Ф.М. Достоевский" }, { text: "Л.Н. Толстой" }, { text: "А.Н. Островский" }, { text: "А.П. Чехов", isCorrect: true } ], rationale: "'Вишневый сад' — одна из самых известных пьес Антона Павловича Чехова." }
+                ]
             }
         ];
 
-        const carousel = document.getElementById("carousel");
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
 
-        projects.forEach((project, index) => {
-            const projectDiv = document.createElement("div");
-            projectDiv.className = "project";
-            projectDiv.innerHTML = `
-                <img src="${project.image_url}" alt="${project.title}">
-                <p>${project.title}</p>
-                <div class="arrow-container">
-                    <div class="arrow" onclick="toggleDescription(${index})"></div>
-                </div>
-                <div class="description" id="description-${index}">
-                    <p>${project.description}</p>
-                </div>
-            `;
-            carousel.appendChild(projectDiv);
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewBtn = document.getElementById('review-btn');
+
+        const roundTitle = document.getElementById('round-title');
+        const questionText = document.getElementById('question-text');
+        const answerButtons = document.getElementById('answer-buttons');
+        const progressText = document.getElementById('progress-text');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreText = document.getElementById('score-text');
+        const scoreMessage = document.getElementById('score-message');
+        const resultsDetails = document.getElementById('results-details');
+
+        let allQuestions = [];
+        let userAnswers = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function flattenQuestions() {
+            allQuestions = quizData.flatMap(round => 
+                round.questions.map(q => ({...q, round: round.round}))
+            );
+        }
+
+        startBtn.addEventListener('click', startQuiz);
+        restartBtn.addEventListener('click', restartQuiz);
+        reviewBtn.addEventListener('click', () => {
+            resultsDetails.classList.toggle('hidden');
+            reviewBtn.textContent = resultsDetails.classList.contains('hidden') ? 'Посмотреть ответы' : 'Скрыть ответы';
         });
 
-        function toggleDescription(index) {
-            const description = document.getElementById(`description-${index}`);
-            const project = description.closest('.project');
-            const allProjects = document.querySelectorAll('.project');
+        function startQuiz() {
+            flattenQuestions();
+            startScreen.classList.add('hidden');
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            resultsDetails.innerHTML = '';
+            resultsDetails.classList.add('hidden');
+            reviewBtn.textContent = 'Посмотреть ответы';
+            showQuestion();
+        }
 
-            allProjects.forEach((proj) => {
-                if (proj !== project) {
-                    proj.classList.remove('expanded');
-                    const desc = proj.querySelector('.description');
-                    if (desc) desc.classList.remove('active');
+        function showQuestion() {
+            resetState();
+            if (currentQuestionIndex >= allQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const currentQuestion = allQuestions[currentQuestionIndex];
+            questionText.innerText = currentQuestion.question;
+            roundTitle.innerText = currentQuestion.round;
+            
+            updateProgress();
+
+            currentQuestion.options.forEach(option => {
+                const button = document.createElement('button');
+                button.innerText = option.text;
+                button.classList.add('btn', 'answer-btn', 'w-full', 'p-4', 'text-left');
+                if (option.isCorrect) {
+                    button.dataset.correct = true;
                 }
+                button.addEventListener('click', selectAnswer);
+                answerButtons.appendChild(button);
             });
+        }
+        
+        function updateProgress() {
+            progressText.innerText = `Вопрос ${currentQuestionIndex + 1} из ${allQuestions.length}`;
+            const progressPercentage = ((currentQuestionIndex + 1) / allQuestions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
 
-            if (description.classList.contains('active')) {
-                description.classList.remove('active');
-                project.classList.remove('expanded');
-            } else {
-                description.classList.add('active');
-                project.classList.add('expanded');
+        function resetState() {
+            while (answerButtons.firstChild) {
+                answerButtons.removeChild(answerButtons.firstChild);
             }
         }
+
+        function selectAnswer(e) {
+            const selectedBtn = e.target;
+            const isCorrect = selectedBtn.dataset.correct === 'true';
+
+            userAnswers.push({
+                question: allQuestions[currentQuestionIndex].question,
+                round: allQuestions[currentQuestionIndex].round,
+                selectedAnswer: selectedBtn.innerText,
+                isCorrect: isCorrect,
+                correctAnswer: allQuestions[currentQuestionIndex].options.find(opt => opt.isCorrect).text,
+                rationale: allQuestions[currentQuestionIndex].rationale
+            });
+            
+            if (isCorrect) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+            showQuestion();
+        }
+        
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+            scoreText.innerText = `Ваш результат: ${score} из ${allQuestions.length}`;
+            
+            let message = '';
+            const percentage = (score / allQuestions.length) * 100;
+            if (percentage === 100) {
+                message = "Поздравляем! Вы — настоящий знаток русского языка!";
+            } else if (percentage >= 75) {
+                message = "Отличный результат! Вы прекрасно разбираетесь в тонкостях языка.";
+            } else if (percentage >= 50) {
+                message = "Хороший результат! Есть пара моментов, которые стоит повторить.";
+            } else {
+                message = "Неплохо, но есть к чему стремиться. Повторение — мать учения!";
+            }
+            scoreMessage.innerText = message;
+            
+            populateResultsDetails();
+        }
+        
+        function populateResultsDetails() {
+            resultsDetails.innerHTML = '';
+            let questionCounter = 0;
+
+            quizData.forEach(roundData => {
+                const roundContainer = document.createElement('div');
+                roundContainer.classList.add('mb-6');
+
+                const roundHeader = document.createElement('h3');
+                roundHeader.textContent = roundData.round;
+                roundHeader.classList.add('text-2xl', 'font-black', 'mb-4', 'pb-2', 'border-b-2');
+                roundHeader.style.color = '#1E54A2';
+                roundHeader.style.borderColor = '#F76A9E';
+                roundContainer.appendChild(roundHeader);
+
+                const answersForThisRound = userAnswers.filter(answer => answer.round === roundData.round);
+
+                answersForThisRound.forEach(answer => {
+                    questionCounter++;
+                    const resultItem = document.createElement('div');
+                    resultItem.classList.add('p-4', 'rounded-lg', 'bg-white', 'shadow-sm', 'mb-4');
+                    resultItem.classList.add(answer.isCorrect ? 'result-item-correct' : 'result-item-incorrect');
+                    
+                    let answerHTML = '';
+                    if (answer.isCorrect) {
+                        answerHTML = `<p class="mt-2"><strong>Ваш ответ:</strong> <span class="text-green-600 font-semibold">${answer.selectedAnswer} (Верно)</span></p>`;
+                    } else {
+                        answerHTML = `
+                            <p class="mt-2"><strong>Ваш ответ:</strong> <span class="text-red-600 font-semibold">${answer.selectedAnswer} (Неверно)</span></p>
+                            <p class="mt-1"><strong>Правильный ответ:</strong> <span class="text-green-600 font-semibold">${answer.correctAnswer}</span></p>
+                        `;
+                    }
+
+                    resultItem.innerHTML = `
+                        <p class="font-semibold">${questionCounter}. ${answer.question}</p>
+                        ${answerHTML}
+                        <p class="mt-2 text-sm text-stone-600 bg-stone-100 p-2 rounded"><strong>Объяснение:</strong> ${answer.rationale}</p>
+                    `;
+                    roundContainer.appendChild(resultItem);
+                });
+
+                resultsDetails.appendChild(roundContainer);
+            });
+        }
+
+        function restartQuiz() {
+            startScreen.classList.remove('hidden');
+            resultsScreen.classList.add('hidden');
+        }
+
     </script>
 </body>
 </html>
